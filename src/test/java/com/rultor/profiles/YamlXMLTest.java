@@ -34,6 +34,8 @@ import com.rultor.spi.Profile;
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * Tests for ${@link YamlXML}.
@@ -76,24 +78,46 @@ final class YamlXMLTest {
 
     /**
      * YamlXML can parse a broken text and throw.
+     * @param yaml Text to check
+     */
+    @ParameterizedTest
+    @ValueSource(strings = {
+        "thre\n\t\\/\u0000",
+        "first: \"привет \\/\t\r\""
+    })
+    void parsesBrokenConfigsAndThrows(final String yaml) {
+        Assertions.assertThrows(
+            Profile.ConfigException.class,
+            () -> new YamlXML(yaml).get()
+        );
+    }
+
+    /**
+     * YamlXML can parse a text with spec symbols after |-.
      */
     @Test
-    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
-    void parsesBrokenConfigsAndThrows() {
-        final String[] yamls = {
-            "thre\n\t\\/\u0000",
-            "first: \"привет \\/\t\r\"",
-        };
-        for (final String yaml : yamls) {
-            try {
-                new YamlXML(yaml).get();
-                Assertions.fail(
-                    String.format("exception expected for %s", yaml)
-                );
-            } catch (final Profile.ConfigException ex) {
-                continue;
-            }
-        }
+    void parsesGroupContent() {
+        MatcherAssert.assertThat(
+            new YamlXML("a: alpha\nb: |-\n  echo \"<>some(text);\"").get(),
+            XhtmlMatchers.hasXPaths(
+                "/p/entry[@key='a' and .='alpha']",
+                "/p/entry[@key='b' and .='echo \"<>some(text);\"']"
+            )
+        );
+    }
+
+    /**
+     * YamlXML can parse a multiline text after |-.
+     */
+    @Test
+    void parsesMultilineContent() {
+        MatcherAssert.assertThat(
+            new YamlXML("a: alpha\nb: |-\n  echo \\\n  \"some(text);\"").get(),
+            XhtmlMatchers.hasXPaths(
+                "/p/entry[@key='a' and .='alpha']",
+                "/p/entry[@key='b' and .='echo \\\n\"some(text);\"']"
+            )
+        );
     }
 
 }
