@@ -27,43 +27,69 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.rultor.agents.docker;
+package com.rultor.agents.github;
 
-import com.jcabi.ssh.Shell;
-import com.rultor.spi.Talks;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
-import org.apache.commons.io.IOUtils;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import com.jcabi.aspects.Immutable;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
- * Tests for ${@link DockerHealthCheck}.
+ * GitHub URL for Issue.
  *
- * @since 1.63
+ * @since 2.0
  */
-final class DockerHealthCheckTest {
+@Immutable
+@ToString
+@EqualsAndHashCode(of = "url")
+@SuppressWarnings("PMD.ConstructorShouldDoInitialization")
+final class IssueUrl {
 
     /**
-     * DockerHealthCheckTest can execute checkhost.sh.
-     * @throws Exception In case of error
+     * Pattern for issue Url.
      */
-    @Test
-    void runsCheckHostScript() throws Exception {
-        final Shell shell = Mockito.mock(Shell.class);
-        new DockerHealthCheck(shell).execute(Mockito.mock(Talks.class));
-        Mockito.verify(shell).exec(
-            Mockito.eq(
-                IOUtils.toString(
-                    DockerHealthCheck.class.getResource("checkhost.sh"),
-                    StandardCharsets.UTF_8
-                )
-            ),
-            Mockito.any(InputStream.class),
-            Mockito.any(OutputStream.class),
-            Mockito.any(OutputStream.class)
+    private final Pattern correct =
+        Pattern.compile(".*/(?:issues|pull)/(\\d+)(?:/|$).*");
+
+    /**
+     * Url.
+     */
+    private final String url;
+
+    /**
+     * Ctor.
+     * @param url Issue url.
+     */
+    @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
+    IssueUrl(final String url) {
+        if (url == null || url.isEmpty()) {
+            throw new IllegalArgumentException("URL should not be empty");
+        }
+        this.url = url;
+    }
+
+    /**
+     * Get issue id from url.
+     * @return Issue id
+     * @checkstyle MethodNameCheck (10 lines)
+     */
+    @SuppressWarnings("PMD.ShortMethodName")
+    public int id() {
+        final Matcher matcher = this.correct.matcher(this.url);
+        if (matcher.matches()) {
+            return Integer.parseInt(matcher.group(1));
+        }
+        throw new IllegalStateException(
+            String.format("Url %s is not valid issue url", this.url)
         );
     }
 
+    /**
+     * Check if url is a valid url for Issue.
+     * @return True if valid
+     */
+    public boolean valid() {
+        return this.correct.matcher(this.url).matches();
+    }
 }
