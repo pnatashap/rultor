@@ -169,7 +169,6 @@ final class GithubProfile implements Profile {
         if (!rpo.contents().exists(GithubProfile.FILE, this.branch)) {
             throw new Profile.ConfigException(
                 String.format(
-                    // @checkstyle LineLength (1 line)
                     "%s file must be present in root directory of %s, see https://doc.rultor.com/reference.html#assets",
                     GithubProfile.FILE, rpo.coordinates()
                 )
@@ -193,7 +192,6 @@ final class GithubProfile implements Profile {
         if (!friends.contains(coords)) {
             throw new Profile.ConfigException(
                 String.format(
-                    // @checkstyle LineLength (1 line)
                     "%s in %s doesn't allow %s to use its assets (there are %d friends), see http://doc.rultor.com/reference.html#assets",
                     GithubProfile.FILE, rpo.coordinates(),
                     this.repo.coordinates(), friends.size()
@@ -245,7 +243,6 @@ final class GithubProfile implements Profile {
             if (!commit.isVerified()) {
                 throw new Profile.ConfigException(
                     String.format(
-                        // @checkstyle LineLength (1 line)
                         "The last commit at %s in %s is not verified, that's why assets are not permitted to use in %s",
                         GithubProfile.FILE, this.repo.coordinates(),
                         rpo.coordinates()
@@ -256,7 +253,6 @@ final class GithubProfile implements Profile {
             if (!trustees.contains(author)) {
                 throw new Profile.ConfigException(
                     String.format(
-                        // @checkstyle LineLength (1 line)
                         "Since @%s is the modifier of %s in %s, that's why assets are not permitted to use in %s",
                         author, GithubProfile.FILE, this.repo.coordinates(),
                         rpo.coordinates()

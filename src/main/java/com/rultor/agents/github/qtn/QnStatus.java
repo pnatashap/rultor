@@ -107,7 +107,6 @@ public final class QnStatus implements Question {
                         new Sub(
                             shell.exec(
                                 String.format(
-                                    // @checkstyle LineLength (1 line)
                                     "dir=%s; if [ -e \"${dir}/cid\" ]; then cat \"${dir}/cid\"; fi",
                                     Ssh.escape(dir)
                                 )

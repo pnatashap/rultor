@@ -91,7 +91,6 @@ final class TkDaemon implements TkRegex {
             throw new RsForward(
                 new RsFlash(
                     String.format(
-                        // @checkstyle LineLength (1 line)
                         "According to .rultor.yml, you (%s) are not allowed to see this",
                         user
                     ),

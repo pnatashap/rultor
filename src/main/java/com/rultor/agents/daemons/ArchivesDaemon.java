@@ -95,7 +95,6 @@ public final class ArchivesDaemon extends AbstractAgent {
                 // @checkstyle MultipleStringLiteralsCheck (1 line)
                 "fi",
                 "if [ -r stdout ]",
-                // @checkstyle LineLength (1 line)
                 "then cat stdout | iconv -f utf-8 -t utf-8 -c | LANG=en_US.UTF-8 col -bx",
                 "else echo 'Stdout not found, internal error'",
                 "fi"

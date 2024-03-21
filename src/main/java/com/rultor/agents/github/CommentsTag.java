@@ -137,7 +137,6 @@ public final class CommentsTag extends AbstractAgent {
             rel.prerelease(this.isPrerelease(req));
             rel.body(
                 String.format(
-                    // @checkstyle LineLength (1 line)
                     "See #%d, release log:\n\n%s\n\nReleased by Rultor %s, see [build log](%s)",
                     issue.number(),
                     new CommitsLog(repo).build(prev, rel.publishedAt()),

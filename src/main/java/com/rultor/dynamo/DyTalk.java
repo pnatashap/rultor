@@ -146,7 +146,6 @@ public final class DyTalk implements Talk {
             if (body.length > DyTalk.LIMIT) {
                 throw new IllegalArgumentException(
                     String.format(
-                        // @checkstyle LineLength (1 line)
                         "XML is too big (%d bytes, maximum is %d), even after ZIP, in \"%s\"",
                         body.length, DyTalk.LIMIT,
                         this.item.get(DyTalks.HASH).getS()

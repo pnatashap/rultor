@@ -206,7 +206,6 @@ public final class StartsRequest extends AbstractAgent {
                     new Mapped<>(
                         Ssh::escape,
                         this.profile.read().xpath(
-                            // @checkstyle LineLength (1 line)
                             "/p/entry[@key='release']/entry[@key='sensitive']/item/text()"
                         )
                     )
